@@ -1,0 +1,170 @@
+[
+    {
+        "id": "8e4f679cae378904",
+        "type": "mysql",
+        "z": "10e64a560e325369",
+        "mydb": "f3dcd1d29fc13f76",
+        "name": "P2DB",
+        "x": 1010,
+        "y": 240,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "7faa5439ea9f31d8",
+        "type": "change",
+        "z": "10e64a560e325369",
+        "name": "Insert topic",
+        "rules": [
+            {
+                "t": "set",
+                "p": "topic",
+                "pt": "msg",
+                "to": "INSERT INTO log(`state`, `datetime`) VALUES (?,?);",
+                "tot": "str"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 530,
+        "y": 240,
+        "wires": [
+            [
+                "3e4f5ef47173c280",
+                "07b9b121ad7a69d6"
+            ]
+        ]
+    },
+    {
+        "id": "3e4f5ef47173c280",
+        "type": "function",
+        "z": "10e64a560e325369",
+        "name": "Redo Payload",
+        "func": "const payload = msg.payload.split(\"|\");\nmsg.payload = [payload[0], payload[1]];\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 760,
+        "y": 240,
+        "wires": [
+            [
+                "8e4f679cae378904"
+            ]
+        ]
+    },
+    {
+        "id": "07b9b121ad7a69d6",
+        "type": "function",
+        "z": "10e64a560e325369",
+        "name": "Notify State Change",
+        "func": "const payload = msg.payload.split(\"|\");\nvar state = payload[0];\nvar datetime = payload[1];\nmsg.headers = {\n    'content-type': 'application/x-www-form-urlencoded',\n    'Authorization': 'Bearer 37dKfsg19Ic9yNDbCXYUIlGBEWaxCIkkeqMJPG8cb9e'\n};\nmsg.payload = { 'message': 'State Change to ' + state + ' on ' + datetime};\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 780,
+        "y": 320,
+        "wires": [
+            [
+                "7af3dbdefc66bfec"
+            ]
+        ]
+    },
+    {
+        "id": "7af3dbdefc66bfec",
+        "type": "http request",
+        "z": "10e64a560e325369",
+        "name": "Line Notify",
+        "method": "POST",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "http://notify-api.line.me/api/notify",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 1010,
+        "y": 320,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "f96b5d14a6d552dd",
+        "type": "mqtt in",
+        "z": "10e64a560e325369",
+        "name": "",
+        "topic": "P2/StateChange",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "10e78a89.5b4fd5",
+        "nl": false,
+        "rap": false,
+        "inputs": 0,
+        "x": 280,
+        "y": 240,
+        "wires": [
+            [
+                "7faa5439ea9f31d8",
+                "5649029239133917"
+            ]
+        ]
+    },
+    {
+        "id": "5649029239133917",
+        "type": "debug",
+        "z": "10e64a560e325369",
+        "name": "debug 1",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 500,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "f3dcd1d29fc13f76",
+        "type": "MySQLdatabase",
+        "name": "Project2",
+        "host": "127.0.0.1",
+        "port": "3306",
+        "db": "Project2",
+        "tz": "",
+        "charset": "UTF8"
+    },
+    {
+        "id": "10e78a89.5b4fd5",
+        "type": "mqtt-broker",
+        "name": "",
+        "broker": "localhost",
+        "port": "1883",
+        "clientid": "",
+        "usetls": false,
+        "compatmode": true,
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": ""
+    }
+]

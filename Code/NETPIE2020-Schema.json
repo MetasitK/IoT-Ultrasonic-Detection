@@ -1,0 +1,21 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "status": {
+      "operation": {
+        "store": {
+          "ttl": "7d"
+        }
+      },
+      "type": "string"
+    },
+    "dateTime": {
+      "operation": {
+        "store": {
+          "ttl": "7d"
+        }
+      },
+      "type": "string"
+    }
+  }
+}
